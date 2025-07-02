@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Trophy, Target, CheckCircle } from 'lucide-react';
+import { Trophy, Target, CheckCircle, UserCheck } from 'lucide-react';
 
 const ParticipationBlock = () => {
   const participationData = {
