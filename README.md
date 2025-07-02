@@ -1,73 +1,103 @@
-# Welcome to your Lovable project
+# 📌 사용자 페르소나 정의 (수업 도우미 서비스)
 
-## Project info
+## 🧑‍🏫 페르소나 1 – 대학교 교수
 
-**URL**: https://lovable.dev/projects/313ff1d7-11c7-40a2-b64a-3fc15589996d
+### 열정적인 강의자 - 이지현 교수 (45세)
 
-## How can I edit this code?
+- **직업:** 대학교 미디어학과 교수  
+- **라이프스타일:**  
+  - 주 3회 온라인 강의 진행  
+  - 보조 자료 활용에 적극적  
+  - 학생 참여를 중요시함  
+- **목표:**  
+  - 실시간 퀴즈, 설문 등을 활용해 참여 유도  
+  - 수업 중 출석 및 반응 즉시 확인  
+- **니즈:**  
+  - 하나의 화면에서 모든 기능 사용 가능  
+  - 메뉴 이동 없이 직관적으로 퀴즈/설문/출석 관리  
+- **페인 포인트:**  
+  - 복잡한 UI  
+  - 출석/참여 확인의 번거로움  
+  - Zoom, 카카오톡, 구글폼 등 플랫폼 분산 문제
 
-There are several ways of editing your application.
+#### 🧩 사용자 시나리오
 
-**Use Lovable**
+- **상황:** 온라인 수업 중 학생의 몰입도 확인 필요  
+- **시나리오 흐름:**  
+  1. 수업 도우미 접속 → 수업 시작  
+  2. 15분 후 퀴즈 블록 클릭 → 즉시 문제 출제  
+  3. 응답 실시간 확인 → 정답 해설  
+  4. 출석 블록으로 결석자 확인 → 메시지 발송  
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/313ff1d7-11c7-40a2-b64a-3fc15589996d) and start prompting.
+#### ✅ 사용자 스토리
 
-Changes made via Lovable will be committed automatically to this repo.
+> “교수로서, 저는 수업 중 학생들의 반응을 실시간으로 확인하고 싶습니다.  
+> 그래서 수업의 몰입도를 높이고 교육 효과를 향상시킬 수 있습니다.”
 
-**Use your preferred IDE**
+#### ✔️ 인수 조건
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- **Given:** 교수는 수업 도우미에 접속함  
+- **When:** 퀴즈 또는 설문 블록을 사용함  
+- **Then:** 학생 응답은 5초 이내 시각화되어야 함
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## 👩‍🎓 페르소나 2 – 대학교 재학생
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### 능동적인 수강생 - 김보민 (21세)
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+- **직업:** 디자인학과 3학년 재학생  
+- **라이프스타일:**  
+  - 온라인 수업 + 팀플 병행  
+  - 노트북/태블릿 병용  
+- **목표:**  
+  - 출석/퀴즈/설문을 제때 제출  
+  - 수업 흐름에 집중  
+- **니즈:**  
+  - 채팅, 퀴즈, 설문 참여를 한 화면에서 처리  
+  - 퀴즈 결과를 실시간으로 확인  
+- **페인 포인트:**  
+  - 창 전환 많음 → 줌+구글폼+카톡 전환 피로  
+  - 집중도 저하
 
-# Step 3: Install the necessary dependencies.
-npm i
+#### 🧩 사용자 시나리오
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+- **상황:** 수업 중 갑작스런 퀴즈, 여러 창 전환으로 혼란  
+- **시나리오 흐름:**  
+  1. 수업 도우미 접속 후 ‘수업 참여’  
+  2. 채팅/자료/퀴즈 블록이 동시에 화면에 배치  
+  3. 퀴즈 응답 후 ‘제출’ → 결과 즉시 확인  
+  4. 출석/퀴즈 내역 자동 저장
 
-**Edit a file directly in GitHub**
+#### ✅ 사용자 스토리
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+> “학생으로서, 저는 수업 중 여러 화면을 전환하지 않고  
+> 하나의 화면에서 퀴즈, 채팅, 자료 확인을 하고 싶습니다.  
+> 그래야 수업에 더 몰입할 수 있어요.”
 
-**Use GitHub Codespaces**
+#### ✔️ 인수 조건
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- **Given:** 학생이 수업 화면에 접속함  
+- **When:** 퀴즈가 활성화됨  
+- **Then:** 별도 페이지 이동 없이 응답할 수 있어야 함
 
-## What technologies are used for this project?
+---
 
-This project is built with:
+## 🔧 핵심 기능 블록 구조
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+| 블록 이름        | 주요 기능                                | 사용 주체     |
+|------------------|--------------------------------------------|----------------|
+| 실시간 채팅       | 질문 응답, 학생 간 소통                    | 학생, 교수     |
+| 퀴즈             | 단답형/객관식 문제 출제 및 응답 확인        | 교수, 학생     |
+| 설문             | 의견 수렴, 선택형 응답                     | 교수, 학생     |
+| 출석 확인        | 출석 상태 실시간 확인, 기록                | 교수           |
+| 자료 공유        | 강의자료 업로드 및 자료 화면 내 표시         | 교수           |
+| 참여 내역        | 퀴즈/출석/설문 결과 조회                   | 학생           |
 
-## How can I deploy this project?
+---
 
-Simply open [Lovable](https://lovable.dev/projects/313ff1d7-11c7-40a2-b64a-3fc15589996d) and click on Share -> Publish.
+## 💡 핵심 가치 제안
 
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+- **집중 몰입형 UI**: 메뉴 없이 블록 단위로 기능 구성  
+- **실시간 상호작용**: 참여형 수업을 위한 퀴즈, 설문, 채팅 통합  
+- **간편한 수업 운영**: 수업자와 수강생 모두 직관적인 UX 제공
