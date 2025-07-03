@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Users, MessageCircle, FileText, BookOpen, ClipboardList, Trophy, Clock, Plus, X } from 'lucide-react';
 import ClassInfo from '@/components/ClassInfo';
@@ -11,7 +10,7 @@ import SurveyCheckBlock from '@/components/SurveyCheckBlock';
 import UserProfile from '@/components/UserProfile';
 
 const Index = () => {
-  const [userRole, setUserRole] = useState('instructor'); // 'instructor' or 'student'
+  const [userRole, setUserRole] = useState<'instructor' | 'student'>('instructor');
   const [userName] = useState('이지현'); // This would come from authentication
   const [activeQuiz, setActiveQuiz] = useState(null);
   const [messages, setMessages] = useState([
