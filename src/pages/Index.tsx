@@ -8,16 +8,25 @@ import AttendanceBlock from '@/components/AttendanceBlock';
 import ParticipationBlock from '@/components/ParticipationBlock';
 import SurveyCheckBlock from '@/components/SurveyCheckBlock';
 import UserProfile from '@/components/UserProfile';
+import WidgetSelectorModal from '@/components/WidgetSelectorModal';
+import MemoBlock from '@/components/MemoBlock';
+import PollBlock from '@/components/PollBlock';
+
+interface WidgetConfig {
+  [key: string]: any;
+}
 
 const Index = () => {
   const [userRole, setUserRole] = useState<'instructor' | 'student'>('instructor');
-  const [userName] = useState('이지현'); // This would come from authentication
+  const [userName] = useState('이지현');
   const [activeQuiz, setActiveQuiz] = useState(null);
   const [messages, setMessages] = useState([
     { id: 1, user: '이지현 교수', message: '안녕하세요! 오늘 수업을 시작하겠습니다.', time: '10:00', isTeacher: true },
     { id: 2, user: '김보민', message: '교수님 안녕하세요!', time: '10:01', isTeacher: false },
     { id: 3, user: '박민수', message: '좋은 아침입니다~', time: '10:01', isTeacher: false }
   ]);
+
+  const [isWidgetModalOpen, setIsWidgetModalOpen] = useState(false);
 
   // Block visibility state for instructor view
   const [visibleBlocks, setVisibleBlocks] = useState({
@@ -26,8 +35,13 @@ const Index = () => {
     attendance: true,
     fileShare: true,
     participation: true,
-    surveyCheck: false
+    surveyCheck: false,
+    memo: false,
+    poll: false
   });
+
+  // Widget configurations
+  const [widgetConfigs, setWidgetConfigs] = useState<WidgetConfig>({});
 
   const classInfo = {
     name: '미디어 심리학',
@@ -36,7 +50,7 @@ const Index = () => {
     participants: 25
   };
 
-  const addMessage = (message) => {
+  const addMessage = (message: string) => {
     const newMessage = {
       id: messages.length + 1,
       user: userRole === 'instructor' ? '이지현 교수' : '김보민',
@@ -47,119 +61,103 @@ const Index = () => {
     setMessages([...messages, newMessage]);
   };
 
-  const toggleBlock = (blockName) => {
+  const toggleBlock = (blockName: string) => {
     setVisibleBlocks(prev => ({
       ...prev,
       [blockName]: !prev[blockName]
     }));
   };
 
-  const addNewBlock = (blockType) => {
+  const handleAddWidget = (widgetType: string, config: any) => {
     setVisibleBlocks(prev => ({
       ...prev,
-      [blockType]: true
+      [widgetType]: true
+    }));
+    setWidgetConfigs(prev => ({
+      ...prev,
+      [widgetType]: config
     }));
   };
+
+  const getHiddenWidgets = () => {
+    return Object.entries(visibleBlocks)
+      .filter(([_, visible]) => !visible)
+      .map(([key]) => key);
+  };
+
+  const renderBlockWithClose = (blockName: string, content: React.ReactNode, heightClass: string = 'h-48') => (
+    <div className={`${heightClass} relative`}>
+      <button
+        onClick={() => toggleBlock(blockName)}
+        className="absolute top-2 right-2 z-10 p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
+      >
+        <X className="w-4 h-4" />
+      </button>
+      {content}
+    </div>
+  );
 
   const renderInstructorView = () => (
     <>
       {/* 왼쪽 블록들 */}
       <div className="col-span-4 space-y-4">
-        {/* 수업 정보 블록 */}
-        {visibleBlocks.classInfo && (
-          <div className="h-48 relative">
-            <button
-              onClick={() => toggleBlock('classInfo')}
-              className="absolute top-2 right-2 z-10 p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
-            >
-              <X className="w-4 h-4" />
-            </button>
-            <ClassInfo classInfo={classInfo} />
-          </div>
+        {visibleBlocks.classInfo && renderBlockWithClose(
+          'classInfo',
+          <ClassInfo classInfo={classInfo} />
         )}
         
-        {/* 퀴즈 블록 */}
-        {visibleBlocks.quiz && (
-          <div className="h-64 relative">
-            <button
-              onClick={() => toggleBlock('quiz')}
-              className="absolute top-2 right-2 z-10 p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
-            >
-              <X className="w-4 h-4" />
-            </button>
-            <QuizBlock activeQuiz={activeQuiz} setActiveQuiz={setActiveQuiz} />
-          </div>
+        {visibleBlocks.quiz && renderBlockWithClose(
+          'quiz',
+          <QuizBlock activeQuiz={activeQuiz} setActiveQuiz={setActiveQuiz} config={widgetConfigs.quiz} />,
+          'h-64'
         )}
         
-        {/* 출석 블록 */}
-        {visibleBlocks.attendance && (
-          <div className="flex-1 relative">
-            <button
-              onClick={() => toggleBlock('attendance')}
-              className="absolute top-2 right-2 z-10 p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
-            >
-              <X className="w-4 h-4" />
-            </button>
-            <AttendanceBlock participants={classInfo.participants} />
-          </div>
+        {visibleBlocks.attendance && renderBlockWithClose(
+          'attendance',
+          <AttendanceBlock participants={classInfo.participants} />,
+          'flex-1'
         )}
 
-        {/* 블록 추가 버튼 */}
-        <div className="flex justify-center">
-          <div className="flex gap-2">
-            {!visibleBlocks.surveyCheck && (
-              <button
-                onClick={() => addNewBlock('surveyCheck')}
-                className="p-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                title="설문 체크 블록 추가"
-              >
-                <Plus className="w-4 h-4" />
-              </button>
-            )}
-          </div>
-        </div>
+        {visibleBlocks.memo && renderBlockWithClose(
+          'memo',
+          <MemoBlock config={widgetConfigs.memo} userRole={userRole} />
+        )}
       </div>
 
       {/* 중앙 블록들 */}
       <div className="col-span-4 space-y-4">
-        {/* 자료 공유 블록 */}
-        {visibleBlocks.fileShare && (
-          <div className="h-64 relative">
-            <button
-              onClick={() => toggleBlock('fileShare')}
-              className="absolute top-2 right-2 z-10 p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
-            >
-              <X className="w-4 h-4" />
-            </button>
-            <FileShare />
-          </div>
+        {visibleBlocks.fileShare && renderBlockWithClose(
+          'fileShare',
+          <FileShare />,
+          'h-64'
         )}
         
-        {/* 설문 체크 블록 */}
-        {visibleBlocks.surveyCheck && (
-          <div className="h-48 relative">
-            <button
-              onClick={() => toggleBlock('surveyCheck')}
-              className="absolute top-2 right-2 z-10 p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
-            >
-              <X className="w-4 h-4" />
-            </button>
-            <SurveyCheckBlock userRole={userRole} />
-          </div>
+        {visibleBlocks.surveyCheck && renderBlockWithClose(
+          'surveyCheck',
+          <SurveyCheckBlock userRole={userRole} config={widgetConfigs.surveyCheck} />
+        )}
+
+        {visibleBlocks.poll && renderBlockWithClose(
+          'poll',
+          <PollBlock config={widgetConfigs.poll} userRole={userRole} />
         )}
         
-        {/* 참여 내역 블록 */}
-        {visibleBlocks.participation && (
-          <div className="flex-1 relative">
-            <button
-              onClick={() => toggleBlock('participation')}
-              className="absolute top-2 right-2 z-10 p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
-            >
-              <X className="w-4 h-4" />
-            </button>
-            <ParticipationBlock />
-          </div>
+        {visibleBlocks.participation && renderBlockWithClose(
+          'participation',
+          <ParticipationBlock />,
+          'flex-1'
         )}
+
+        {/* 블록 추가 버튼 */}
+        <div className="flex justify-center">
+          <button
+            onClick={() => setIsWidgetModalOpen(true)}
+            className="p-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2"
+          >
+            <Plus className="w-5 h-5" />
+            <span>위젯 추가</span>
+          </button>
+        </div>
       </div>
     </>
   );
@@ -173,12 +171,18 @@ const Index = () => {
         </div>
         
         <div className="h-64">
-          <QuizBlock activeQuiz={activeQuiz} setActiveQuiz={setActiveQuiz} />
+          <QuizBlock activeQuiz={activeQuiz} setActiveQuiz={setActiveQuiz} config={widgetConfigs.quiz} />
         </div>
         
         {visibleBlocks.surveyCheck && (
           <div className="h-48">
-            <SurveyCheckBlock userRole={userRole} />
+            <SurveyCheckBlock userRole={userRole} config={widgetConfigs.surveyCheck} />
+          </div>
+        )}
+
+        {visibleBlocks.memo && (
+          <div className="h-48">
+            <MemoBlock config={widgetConfigs.memo} userRole={userRole} />
           </div>
         )}
         
@@ -192,6 +196,12 @@ const Index = () => {
         <div className="h-64">
           <FileShare />
         </div>
+
+        {visibleBlocks.poll && (
+          <div className="h-48">
+            <PollBlock config={widgetConfigs.poll} userRole={userRole} />
+          </div>
+        )}
       </div>
     </>
   );
@@ -234,6 +244,14 @@ const Index = () => {
           <ChatSection messages={messages} addMessage={addMessage} participants={classInfo.participants} />
         </div>
       </div>
+
+      {/* 위젯 선택 모달 */}
+      <WidgetSelectorModal
+        isOpen={isWidgetModalOpen}
+        onClose={() => setIsWidgetModalOpen(false)}
+        onSelectWidget={handleAddWidget}
+        hiddenWidgets={getHiddenWidgets()}
+      />
     </div>
   );
 };

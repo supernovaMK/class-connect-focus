@@ -1,14 +1,16 @@
-
 import React, { useState } from 'react';
 import { CheckSquare, Users, Check } from 'lucide-react';
 
 interface SurveyCheckBlockProps {
   userRole: 'instructor' | 'student';
+  config?: {
+    title?: string;
+  };
 }
 
-const SurveyCheckBlock = ({ userRole }: SurveyCheckBlockProps) => {
-  const [checkQuestion, setCheckQuestion] = useState('오늘 과제 제출 완료했나요?');
-  const [isActive, setIsActive] = useState(false);
+const SurveyCheckBlock = ({ userRole, config }: SurveyCheckBlockProps) => {
+  const [checkQuestion, setCheckQuestion] = useState(config?.title || '오늘 과제 제출 완료했나요?');
+  const [isActive, setIsActive] = useState(!!config?.title);
   const [studentResponse, setStudentResponse] = useState(false);
   const [responses] = useState({
     total: 25,
