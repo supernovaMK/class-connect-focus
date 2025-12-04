@@ -1,12 +1,28 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { HelpCircle, CheckCircle } from 'lucide-react';
 
-const QuizBlock = ({ activeQuiz, setActiveQuiz }) => {
+interface QuizConfig {
+  question?: string;
+  options?: string[];
+  correctAnswer?: number;
+}
+
+interface QuizBlockProps {
+  activeQuiz: any;
+  setActiveQuiz: (quiz: any) => void;
+  config?: QuizConfig;
+}
+
+const QuizBlock = ({ activeQuiz, setActiveQuiz, config }: QuizBlockProps) => {
   const [selectedAnswer, setSelectedAnswer] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
-  const sampleQuiz = {
+  const sampleQuiz = config?.question ? {
+    id: 1,
+    question: config.question,
+    options: config.options || [],
+    correctAnswer: config.options?.[config.correctAnswer || 0] || ''
+  } : {
     id: 1,
     question: '미디어 심리학에서 가장 중요한 개념은 무엇인가요?',
     options: ['인지 편향', '감정적 반응', '사회적 학습', '모든 것'],
